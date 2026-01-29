@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+    body {
+        background-color: #003A8F;
+        color: white;
+    }
+
+    h2 {
+        color: #FFD200;
+        text-align: center;
+    }
+
+    label {
+        margin-top: 10px;
+    }
+
+    .btn-primary {
+        background-color: #FFD200;
+        color: #003A8F;
+        border: none;
+    }
+</style>
+
+<h2>Cinépolis</h2>
+
+<form method="post">
+    <label>Nombre</label>
+    <input type="text" name="nombre" class="form-control">
+
+    <label>Compradores</label>
+    <input type="number" name="compradores" class="form-control">
+
+    <label>Boletos</label>
+    <input type="number" name="boletos" class="form-control">
+
+    <label>Tarjeta Cinépolis</label>
+    <select name="tarjeta" class="form-control">
+        <option value="no">No</option>
+        <option value="si">Sí</option>
+    </select>
+
+    <br>
+    <button class="btn btn-primary">Procesar</button>
+</form>
+
+{% if total %}
+<hr>
+<p><strong>Nombre:</strong> {{ nombre }}</p>
+<p><strong>Total a pagar:</strong> {{ total }}</p>
+{% endif %}
+
+{% endblock %}

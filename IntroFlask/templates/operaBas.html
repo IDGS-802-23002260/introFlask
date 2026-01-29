@@ -2,7 +2,7 @@
  
 {% block content %}
  
-<form action="/resultado" method="post">
+<form action="/operasBas" method="post">
     <div class="mb-3">
         <label for="n1" class="form-label">Número 1</label>
         <input type="text" class="form-control" name="n1" id="n1">
@@ -40,6 +40,8 @@
     <button type="submit" class="btn btn-primary">Calcular</button>
 </form>
 
-<></>
+<h1>
+    La sum de {{ n1 }} + {{ n2 }} = {{"%.2" .format(res)}}
+</h1>
  
 {% endblock %}
