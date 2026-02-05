@@ -58,6 +58,7 @@ def operas():
             <input type="text" name="apaterno" required>
         </form>
     '''
+    
 
 @app.route("/operasBas", methods =["GET","POST"])
 def operas1():
@@ -102,49 +103,70 @@ def resultado():
     
 @app.route("/cinepolis", methods=["GET", "POST"])
 def cinepolis():
-    total = ""
     nombre = ""
+    compradores = 0
+    boletos = 0
+    tarjeta = ""
+    total = ""
 
-    if request.method == "POST":
-        nombre = request.form.get("nombre")
-        boletos = int(request.form.get("boletos"))
-        compradores = int(request.form.get("compradores"))
-        tarjeta = request.form.get("tarjeta")
+    cinepolis_form = forms.CinepolisForm(request.form)
+
+    if request.method == "POST" and cinepolis_form.validate():
+        nombre = cinepolis_form.nombre.data
+        compradores = cinepolis_form.compradores.data
+        boletos = cinepolis_form.boletos.data
+        tarjeta = cinepolis_form.tarjeta.data
 
         if boletos <= compradores * 7:
             total = boletos * 12
 
             if boletos > 5:
-                total = total * 0.85
+                total *= 0.85
             elif boletos >= 3:
-                total = total * 0.90
+                total *= 0.90
 
             if tarjeta == "si":
-                total = total * 0.90
+                total *= 0.90
         else:
             total = "No se pueden comprar más de 7 boletos por persona"
 
-    return render_template("cinepolis.html", total=total, nombre=nombre)
+    return render_template(
+        "cinepolis.html",
+        form=cinepolis_form,
+        nombre=nombre,
+        compradores=compradores,
+        boletos=boletos,
+        tarjeta=tarjeta,
+        total=total
+    )
 
-@app.route("/usuarios", methods=["GET","POST"])
+@app.route("/usuarios", methods =["GET","POST"])
 def usuarios():
     mat=0
-    nom=""
-    apa=""
-    ama=""
-    email=""
+    nom=''
+    apa=''
+    ama=''
+    email=''
     usuarios_class=forms.UserForm(request.form)
-    if request.method=="POST":
-        mat=usuarios_class.Matricula.data
-        nom=usuarios_class.Nombre.data
-        apa=usuarios_class.Apaterno.data
-        ama=usuarios_class.Amaterno.data
-        email=usuarios_class.Correo.data
-        
-        
-        
-    return render_template("usuarios.html", form=usuarios_class, mat=mat, nom=nom, apa=apa, ama=ama, email=email)
+    if request.method=='POST' and usuarios_class.validate():
+        mat=usuarios_class.matricula.data
+        nom=usuarios_class.nombre.data
+        apa=usuarios_class.apaterno.data
+        ama=usuarios_class.amaterno.data
+        email=usuarios_class.correo.data
 
+        mensaje='Bienvenido {}'.format(nom)
+        flash(mensaje)
+        
+    
+    return render_template("usuarios.html",
+                           form=usuarios_class, 
+                           mat = mat,
+                           nom=nom,
+                           apa=apa,
+                           ama=ama,
+                           email=email)
+    
 if __name__ == '__main__':
     csrf.init_app(app)
     app.run(debug=True)

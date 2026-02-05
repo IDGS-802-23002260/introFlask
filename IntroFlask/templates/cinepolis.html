@@ -1,54 +1,136 @@
-{% extends "layout.html" %}
+{% import "_macros.html" as macros %}
 {% block content %}
 
 <style>
     body {
-        background-color: #003A8F;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .fondo {
+        background-image: url("{{ url_for('static', filename='cinepolis.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        width: 100%;
+        height: 100vh;
+        position: relative;
         color: white;
     }
 
-    h2 {
-        color: #FFD200;
+    .titulo {
         text-align: center;
+        background: white;
+        color: #1f3c88;
+        width: 180px;
+        margin: 20px auto;
+        font-weight: bold;
+        padding: 5px;
     }
 
-    label {
-        margin-top: 10px;
+    .contenedor {
+        width: 900px;
+        margin: auto;
+        position: relative;
     }
 
-    .btn-primary {
-        background-color: #FFD200;
-        color: #003A8F;
+    .caja {
+        border: 2px solid white;
+        padding: 15px;
+        width: 300px;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .entradas {
+        float: left;
+    }
+
+    .salidas {
+        float: right;
+    }
+
+    .acciones {
+        clear: both;
+        width: 300px;
+        margin: 30px auto;
+        border: 2px solid white;
+        padding: 15px;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .caja h3 {
+        margin-top: 0;
+        font-style: italic;
+    }
+
+    .form-control {
+        margin-bottom: 10px;
+    }
+
+    .btn-procesar {
+        background: #FFD200;
         border: none;
+        color: #1f3c88;
+        font-weight: bold;
+        width: 100px;
+        padding: 5px;
+    }
+
+    .btn-salir {
+        background: #e5e5e5;
+        border: none;
+        width: 100px;
+        padding: 5px;
+        margin-left: 10px;
+        text-decoration: none;
+        color: black;
     }
 </style>
 
-<h2>Cinépolis</h2>
+<div class="fondo">
 
-<form method="post">
-    <label>Nombre</label>
-    <input type="text" name="nombre" class="form-control">
+    <div class="titulo">Cinépolis</div>
 
-    <label>Compradores</label>
-    <input type="number" name="compradores" class="form-control">
+    <div class="contenedor">
 
-    <label>Boletos</label>
-    <input type="number" name="boletos" class="form-control">
+        <form method="post" novalidate>
+            {{ form.csrf_token }}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-    <label>Tarjeta Cinépolis</label>
-    <select name="tarjeta" class="form-control">
-        <option value="no">No</option>
-        <option value="si">Sí</option>
-    </select>
+            <!-- ENTRADAS -->
+            <div class="caja entradas">
+                <h3>Entradas</h3>
 
-    <br>
-    <button class="btn btn-primary">Procesar</button>
-</form>
+                {{ macros.campoNuevo(form.nombre, class="form-control") }}
+                {{ macros.campoNuevo(form.compradores, class="form-control") }}
 
-{% if total %}
-<hr>
-<p><strong>Nombre:</strong> {{ nombre }}</p>
-<p><strong>Total a pagar:</strong> {{ total }}</p>
-{% endif %}
+                <label>Tarjeta Cineco</label><br>
+                {% for subfield in form.tarjeta %}
+                    {{ subfield }} {{ subfield.label }}<br>
+                {% endfor %}
+
+                <br>
+                {{ macros.campoNuevo(form.boletos, class="form-control") }}
+            </div>
+
+            <!-- SALIDAS -->
+            <div class="caja salidas">
+                <h3>Salidas</h3>
+
+                <label>Valor a Pagar</label>
+                <input type="text" class="form-control" value="{{ total }}" readonly>
+            </div>
+
+            <!-- ACCIONES -->
+            <div class="acciones">
+                <h3>Acciones</h3>
+                <button type="submit" class="btn-procesar">Procesar</button>
+                <a href="/cinepolis" class="btn-salir">Salir</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
 
 {% endblock %}

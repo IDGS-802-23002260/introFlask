@@ -5,6 +5,7 @@
 <h2>Distancia entre dos puntos</h2>
 
 <form method="post">
+        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
 
     <h4>Punto 1</h4>
     {{ macros.datos("x1", "Ingrese x1", "number") }}
